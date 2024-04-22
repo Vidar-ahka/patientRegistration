@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/Image">
+        <file>Images/AttachFile.png</file>
+        <file>Images/Avatar.png</file>
+        <file>Images/file.png</file>
+        <file>Images/free-icon-file-491740.png</file>
+        <file>Images/arrowDown.png</file>
+    </qresource>
+</RCC>
