@@ -16,6 +16,11 @@ class AddPatiets : public QWidget
 
 public:
     explicit AddPatiets(QWidget *parent = nullptr);
+    AddPatiets(AddPatiets & addpat);
+    AddPatiets & operator =(AddPatiets & addpat);
+    AddPatiets(AddPatiets && addpat);
+    AddPatiets & operator =(AddPatiets && addpat);
+
     ~AddPatiets();
 private slots:
     void SlotClickOk();

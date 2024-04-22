@@ -9,6 +9,26 @@ AddPatiets::AddPatiets(QWidget *parent) :
     connect(ui->OK_Button,&QPushButton::clicked,this,&AddPatiets::SlotClickOk);
     connect(ui->Chane_Button,&QPushButton::clicked,this,&AddPatiets::SlotClickChance);
 }
+AddPatiets::AddPatiets(AddPatiets& addpat)
+{
+    this->ui = addpat.ui;
+}
+AddPatiets & AddPatiets:: operator =(AddPatiets& addpat)
+{
+    this->ui = addpat.ui;
+    return *this;
+}
+
+AddPatiets::AddPatiets(AddPatiets && addpat)
+{
+    this->ui = std::move(addpat.ui);
+}
+AddPatiets& AddPatiets:: operator =(AddPatiets && addpat)
+{
+    this->ui = std::move(addpat.ui);
+}
+
+
 
 AddPatiets::~AddPatiets()
 {
