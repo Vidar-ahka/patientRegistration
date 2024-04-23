@@ -11,8 +11,14 @@ ByteArray::ByteArray(QTcpSocket * Byte)
 }
 
 
-ByteArray::ByteArray(ByteArray & byte){}
- ByteArray::ByteArray(ByteArray && byte){}
+ByteArray::ByteArray(ByteArray & byte)
+{
+    this->operator =(byte);
+}
+ ByteArray::ByteArray(ByteArray && byte)
+ {
+     this->operator =(byte);
+ }
 ByteArray & ByteArray::operator =(ByteArray &  byte)
 {
    this->append(byte);

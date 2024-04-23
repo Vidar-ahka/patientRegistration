@@ -16,11 +16,11 @@ ChatWindow::ChatWindow(QString name):ChatWindow()
 
 ChatWindow::ChatWindow(ChatWindow & cw)
 {
-
+    this->operator =(cw);
 }
 ChatWindow::ChatWindow(ChatWindow && cw)
 {
-
+    this->operator =(cw);
 }
 
 ChatWindow & ChatWindow:: operator =(ChatWindow &cw)
@@ -29,8 +29,11 @@ ChatWindow & ChatWindow:: operator =(ChatWindow &cw)
      MessageWidgetList.clear();
     for(auto &it: cw.MessageWidgetList)
     {
-        MessageWidgetList.push_back(std::make_shared<MessageWidget>(*it.get()));
+        std::shared_ptr<MessageWidget> ptr = std::make_shared<MessageWidget>(*it.get());
+        MessageWidgetList.push_back(ptr);
+        ui->verticalLayout->addWidget(ptr.get());
     }
+
     EMW =MessageWidgetList.back();
 }
 ChatWindow &ChatWindow :: operator =(ChatWindow&&cw)
@@ -40,9 +43,10 @@ ChatWindow &ChatWindow :: operator =(ChatWindow&&cw)
     for(auto it :cw.MessageWidgetList)
     {
         MessageWidgetList.push_back(it);
+        ui->verticalLayout->addWidget(it.get());
     }
     this->EMW = std::move(cw.EMW);
-    this->ui = std::move(cw.ui);
+
     return *this;
 }
 
@@ -65,7 +69,7 @@ void ChatWindow::AddMessage(std::shared_ptr<MessageWidget>MW,bool newMessage)
     }
 
     ui->verticalLayout->addWidget(MW.get());
-   MessageWidgetList.push_back(MW);
+    MessageWidgetList.push_back(MW);
 }
 
 

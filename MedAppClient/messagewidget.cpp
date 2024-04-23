@@ -68,7 +68,7 @@ MessageWidget & MessageWidget::operator =(MessageWidget & mw)
 {
     if(!mw.ui->label->text().isEmpty())
     {
-        SetText(mw.ui->label->text());
+       ui->label->setText( mw.ui->label->text());
     }
     if(mw.image_lay == NULL)
     {
@@ -99,13 +99,45 @@ MessageWidget & MessageWidget::operator =(MessageWidget & mw)
 }
 MessageWidget & MessageWidget::operator =(MessageWidget && mw)
 {
-    File_list = mw.File_list;
+
+    if(!mw.ui->label->text().isEmpty())
+    {
+       ui->label->setText( mw.ui->label->text());
+    }
+    if(mw.file_lay!=NULL)
+    {
+        file_lay =  std::move(mw.file_lay);
+        ui->File_Widget->setLayout(file_lay.get());
+        ui->File_Widget->show();
+
+    }
+    if(mw.file_lay!=NULL)
+    {
+      image_lay = std::move(mw.image_lay);
+      ui->Image_widget->setLayout(image_lay.get());
+      ui->Image_widget->show();
+    }
+    for(auto &it:mw.File_list)
+    {
+       if(it->isImage())
+       {
+          image_lay->addWidget(it.get());
+
+       }
+       else
+       {
+           file_lay->addWidget(it.get());
+       }
+       File_list.push_back(it);
+    }
     mw.File_list.clear();
 
-    file_lay = std::move(mw.file_lay);
-    image_lay = std::move(mw.image_lay);
 
-    ui = std::move(mw.ui);
+
+
+
+
+
     return *this;
 }
 

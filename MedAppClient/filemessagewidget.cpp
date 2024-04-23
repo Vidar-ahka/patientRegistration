@@ -53,8 +53,10 @@ FileMessageWidget& FileMessageWidget::operator=(FileMessageWidget && fmw)
 {
     this->NameFile = std::move(fmw.NameFile);
     this->Url = std::move(fmw.Url);
-    delete ui;
-    this->ui = std::move(fmw.ui);
+
+    ui->file->setPixmap(fmw.ui->file->pixmap());
+    ui->file->show();
+    fmw.ui->file->clear();
     return *this;
 }
 

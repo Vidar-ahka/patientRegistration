@@ -38,7 +38,7 @@ border-radius:10px;
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="res.qrc">:/img/Avatar/Skrepks.PNG</pixmap>
+         <pixmap>:/img/Avatar/Skrepks.PNG</pixmap>
         </property>
        </widget>
       </item>
@@ -60,8 +60,6 @@ border-radius:10px;
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="res.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

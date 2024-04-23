@@ -32,7 +32,6 @@ public:
 private:
 
     bool vis = true;
-    std::shared_ptr<MessageWidget> MW;
     std::shared_ptr<MessageWidget>  EMW;
     QList<std::shared_ptr<MessageWidget>>MessageWidgetList;
 
