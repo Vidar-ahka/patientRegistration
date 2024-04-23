@@ -10,6 +10,23 @@ ByteArray::ByteArray(QTcpSocket * Byte)
 
 }
 
+
+ByteArray::ByteArray(ByteArray & byte){}
+ ByteArray::ByteArray(ByteArray && byte){}
+ByteArray & ByteArray::operator =(ByteArray &  byte)
+{
+   this->append(byte);
+   this->Size = byte.Size;
+   this->packet = byte.packet;
+}
+ByteArray & ByteArray::operator =(ByteArray && byte)
+{
+    QByteArray::operator =(byte);
+    this->Size = std::move(byte.Size);
+    this->packet = std::move(byte.packet);
+}
+
+
 bool ByteArray::AddByte(QTcpSocket * Byte)
 {
     quint64 MinSize = Byte->bytesAvailable()>Size ? Size:Byte->bytesAvailable();

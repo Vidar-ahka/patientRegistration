@@ -11,6 +11,11 @@ class Users
 {
 public:
     Users();
+    Users(Users &users);
+    Users(Users&&users);
+    Users & operator =(const Users &usesr);
+    Users & operator =(Users&&users);
+
     void InserUser(std::shared_ptr<User> user);
     void setSizeHint(QSize newSize);
     std::shared_ptr<User> GetUser(int id);

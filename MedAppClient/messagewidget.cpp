@@ -9,6 +9,8 @@ MessageWidget::MessageWidget(QWidget *parent) :
     ui->File_Widget->hide();
     ui->Image_widget->hide();
     ui->label->hide();
+    file_lay = NULL;
+    image_lay = NULL;
 }
 
 MessageWidget::MessageWidget(MessageInfo *info):MessageWidget()
@@ -21,30 +23,30 @@ MessageWidget::MessageWidget(MessageInfo *info):MessageWidget()
     if(!info->GetImageList().isEmpty())
     {
 
-         std::shared_ptr<QHBoxLayout> box = std::make_shared<QHBoxLayout>();
+         image_lay = std::make_shared<QHBoxLayout>();
+
          for(auto &i:info->GetImageList())
          {
-             NewMessage(box,i);
+             NewMessage(image_lay,std::make_shared<FileMessageWidget>(i));
          }
 
-         ui->Image_widget->setLayout(box.get());
+         ui->Image_widget->setLayout(image_lay.get());
          ui->Image_widget->show();
-         LayoutList.push_back(box);
+
     }
 
 
 
     if(!info->GetFileList().isEmpty())
     {
-          std::shared_ptr<QVBoxLayout> box = std::make_shared<QVBoxLayout>();
-          size_t c = 0;
+          file_lay = std::make_shared<QVBoxLayout>();
           for(auto &i:info->GetFileList())
           {
-              NewMessage(box,i);
+              NewMessage(file_lay,std::make_shared<FileMessageWidget>(i));
           }
-          ui->File_Widget->setLayout(box.get());
+          ui->File_Widget->setLayout(file_lay.get());
           ui->File_Widget->show();
-          LayoutList.push_back(box);
+
     }
 
        ui->widget->setStyleSheet(info->GetColor());
@@ -53,6 +55,59 @@ MessageWidget::MessageWidget(MessageInfo *info):MessageWidget()
 }
 
 
+MessageWidget::MessageWidget( MessageWidget & mw)
+{
+    this->operator =(mw);
+}
+MessageWidget::MessageWidget( MessageWidget && mw)
+{
+    this->operator =(mw);
+}
+
+MessageWidget & MessageWidget::operator =(MessageWidget & mw)
+{
+    if(!mw.ui->label->text().isEmpty())
+    {
+        SetText(mw.ui->label->text());
+    }
+    if(mw.image_lay == NULL)
+    {
+        image_lay = std::make_shared<QHBoxLayout>();
+    }
+    if(mw.file_lay == NULL)
+    {
+        file_lay = std::make_shared<QVBoxLayout>();
+    }
+
+    File_list.clear();
+
+    for(auto &it:mw.File_list)
+    {
+        std::shared_ptr<FileMessageWidget> ptr =
+                std::make_shared<FileMessageWidget>(*it.get());
+       if(it->isImage())
+       {
+          image_lay->addWidget(ptr.get());
+
+       }
+       else
+       {
+           file_lay->addWidget(ptr.get());
+       }
+    }
+    return *this;
+}
+MessageWidget & MessageWidget::operator =(MessageWidget && mw)
+{
+    File_list = mw.File_list;
+    mw.File_list.clear();
+
+    file_lay = std::move(mw.file_lay);
+    image_lay = std::move(mw.image_lay);
+
+    ui = std::move(mw.ui);
+    return *this;
+}
 
 
 MessageWidget::~MessageWidget()
@@ -74,26 +129,14 @@ void MessageWidget::SetText(QString Text)
 }
 
 
-
-void MessageWidget::NewMessage(std::shared_ptr<QLayout> lay, QImage &img)
+void MessageWidget:: NewMessage(std::shared_ptr<QLayout> lay
+                                ,std::shared_ptr<FileMessageWidget> FMW)
 {
-    if(img.isNull())return;
-
-    std::shared_ptr<FileMessageWidget> FMW = std::make_shared<FileMessageWidget>(img);
     File_list.push_back(FMW);
-    LayoutList.push_back(lay);
     lay->addWidget(FMW.get());
 }
 
-void MessageWidget::NewMessage(std::shared_ptr<QLayout> lay, QString &Pair)
-{
-    if(Pair.isEmpty()) return;
 
-    std::shared_ptr<FileMessageWidget>  FMW  = std::make_shared<FileMessageWidget>(Pair);
-    File_list.push_back(FMW);
-    LayoutList.push_back(lay);
-    lay->addWidget(FMW.get());
-}
 
 
 

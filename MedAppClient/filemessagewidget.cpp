@@ -6,29 +6,61 @@ FileMessageWidget::FileMessageWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::FileMessageWidget)
 {
+    NameFile = NULL;
     ui->setupUi(this);
 }
 
 FileMessageWidget::FileMessageWidget(QString&Pair):FileMessageWidget()
 {
+    NameFile = std::make_shared<QLabel>();
 
+    int j =  Pair.lastIndexOf('/',Pair.size());
 
-    NameFile = new QLabel;
+    NameFile->setText(Pair.mid(j+1,Pair.size()));
 
-
-
-         int j =  Pair.lastIndexOf('/',Pair.size());
-         NameFile->setText(Pair.mid(j+1,Pair.size()));
-
-
-
-
-     ui->Comp_File->addWidget(NameFile);
+    ui->Comp_File->addWidget(NameFile.get());
     ui->file->show();
     this->Url = Pair;
+}
 
+FileMessageWidget::FileMessageWidget(FileMessageWidget & fmw)
+{
+    this->operator =(fmw);
 
 }
+FileMessageWidget::FileMessageWidget(FileMessageWidget && fmw)
+{
+    this->operator =(fmw);
+}
+
+FileMessageWidget& FileMessageWidget::operator=(FileMessageWidget & fmw)
+{
+    if(fmw.NameFile==NULL)
+    {
+        NameFile  = std::make_shared<QLabel>(fmw.NameFile.get());
+        ui->Comp_File->addWidget(NameFile.get());
+    }
+    else
+    {
+        ui->file->clear();
+        ui->file->setPixmap(fmw.ui->file->pixmap());
+        ui->file->show();
+    }
+    Url = fmw.Url;
+    return *this;
+}
+FileMessageWidget& FileMessageWidget::operator=(FileMessageWidget && fmw)
+{
+    this->NameFile = std::move(fmw.NameFile);
+    this->Url = std::move(fmw.Url);
+    delete ui;
+    this->ui = std::move(fmw.ui);
+    return *this;
+}
+
+
+
+
 
 FileMessageWidget::FileMessageWidget(QImage &img):FileMessageWidget()
 {
@@ -39,16 +71,17 @@ FileMessageWidget::FileMessageWidget(QImage &img):FileMessageWidget()
     QPixmap pix = QPixmap::fromImage(img);
     ui->file->setPixmap(pix);
     ui->file->show();
-
-
-
 }
 
 
 FileMessageWidget::~FileMessageWidget()
 {
     delete ui;
-    delete NameFile;
+}
+
+bool FileMessageWidget::isImage()
+{
+    return NameFile==NULL;
 }
 
 void FileMessageWidget::mousePressEvent(QMouseEvent *event)

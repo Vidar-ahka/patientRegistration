@@ -15,12 +15,10 @@ Patients::Patients(QWidget *parent) :
     connect(ui->savelexls_pushButton,&QPushButton::clicked,        this,&Patients::SlotSaveExel);
 
 }
-
 Patients::~Patients()
 {
     delete ui;
 }
-
 void Patients::GetPat(QByteArray *byte)
 {
 

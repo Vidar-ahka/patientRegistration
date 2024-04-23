@@ -6,6 +6,7 @@
 #include <QUrl>
 #include<imageclick.h>
 #include<QLabel>
+#include"memory"
 #include<QPixmap>
 
 namespace Ui {
@@ -20,11 +21,18 @@ public:
     explicit FileMessageWidget(QWidget *parent = nullptr);
     FileMessageWidget(QString &Pair);
     FileMessageWidget(QImage  &img);
+
+    FileMessageWidget(FileMessageWidget & fmw);
+    FileMessageWidget(FileMessageWidget && fmw);
+
+    FileMessageWidget& operator=(FileMessageWidget & fmw);
+    FileMessageWidget& operator=(FileMessageWidget && fmw);
+
     ~FileMessageWidget();
     void mousePressEvent(QMouseEvent * event) override;
+    std::shared_ptr<QLabel> NameFile;
+    bool isImage();
 
-    QLabel * NameFile  = nullptr;
-    QLabel * ImageFile = nullptr;
 
 private:
     Ui::FileMessageWidget *ui;

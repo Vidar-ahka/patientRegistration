@@ -15,6 +15,37 @@ Data::Data(int &id, QString &Name, QImage  &Image):Data(id,Name)
     SetImage(Image);
 
 }
+Data::Data(Data& data)
+{
+    this->operator =(data);
+}
+Data & Data::operator=(Data & data)
+{
+    this->id = data.id;
+    this->id         = data.id;
+    this->Name       = data.Name;
+    this->MessageLast= data.MessageLast;
+    this->Image      = data.Image;
+    return *this;
+}
+Data::Data(Data&& data)
+{
+    this->operator =(data);
+}
+Data & Data::operator=(Data && data)
+{
+    this->id = std::move(data.id);
+    this->id =    std::move(data.id);
+    this->Name = std::move(data.Name);
+    this->MessageLast = std::move( data.MessageLast);
+    this->Image  = std::move(data.Image);
+    return *this;
+}
+
+
+
+
+
 Data::~Data(){}
 
 int Data:: GetId(){return this->id;}

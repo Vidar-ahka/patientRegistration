@@ -18,6 +18,7 @@ public:
     void SetAvatar(QImage & Image);
 
 
+
 private slots:
      void SlotSetAvatar();
      void SlotDeleteAvatar();

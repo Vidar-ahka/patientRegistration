@@ -51,7 +51,6 @@ signals:
 private:
      int removeId = 0;
      std::shared_ptr<AddPatiets>  addpatient;
-     quint64 sizeba = 0;
      Ui::Patients *ui;
 
 

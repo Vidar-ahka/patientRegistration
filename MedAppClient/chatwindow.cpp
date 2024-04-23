@@ -14,6 +14,38 @@ ChatWindow::ChatWindow(QString name):ChatWindow()
       ui->Name->setText(name);
 }
 
+ChatWindow::ChatWindow(ChatWindow & cw)
+{
+
+}
+ChatWindow::ChatWindow(ChatWindow && cw)
+{
+
+}
+
+ChatWindow & ChatWindow:: operator =(ChatWindow &cw)
+{
+    this->vis = cw.vis;
+     MessageWidgetList.clear();
+    for(auto &it: cw.MessageWidgetList)
+    {
+        MessageWidgetList.push_back(std::make_shared<MessageWidget>(*it.get()));
+    }
+    EMW =MessageWidgetList.back();
+}
+ChatWindow &ChatWindow :: operator =(ChatWindow&&cw)
+{
+    this->vis = cw.vis;
+    MessageWidgetList.clear();
+    for(auto it :cw.MessageWidgetList)
+    {
+        MessageWidgetList.push_back(it);
+    }
+    this->EMW = std::move(cw.EMW);
+    this->ui = std::move(cw.ui);
+    return *this;
+}
+
 ChatWindow::~ChatWindow()
 {
     delete ui;
@@ -31,9 +63,9 @@ void ChatWindow::AddMessage(std::shared_ptr<MessageWidget>MW,bool newMessage)
     {
         EMW = MW;
     }
-    qDebug()<<"add Message Windget";
+
     ui->verticalLayout->addWidget(MW.get());
-    MessageWdigetLsit.push_back(MW);
+   MessageWidgetList.push_back(MW);
 }
 
 
@@ -44,7 +76,7 @@ void ChatWindow::SlotArrowButton()
    if(!vis)
    {
 
-       EMW = MessageWdigetLsit[MessageWdigetLsit.size()-1];
+       EMW =MessageWidgetList.back();
        vis = true;
    }
    }

@@ -21,10 +21,15 @@ class User : public QWidget
 public:
     User(QWidget *parent = nullptr);
     User(Data* data);
+    User(User & user);
+    User(User && user);
+    User & operator = (User & user);
+    User & operator = (User && user);
     ~User();
 
     std::shared_ptr<ChatWindow>  CW ;
-    Data  * data =  nullptr;
+    Data  * data;
+
     void mousePressEvent(QMouseEvent * event) override;
     void RecvMessage(std::shared_ptr<MessageInfo> info);
     void NullNewMessageCount();

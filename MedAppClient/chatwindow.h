@@ -15,8 +15,14 @@ class ChatWindow : public QWidget
 
 public:
 
-    explicit ChatWindow(QWidget *parent = nullptr);
+     explicit ChatWindow(QWidget *parent = nullptr);
      ChatWindow(QString name);
+     ChatWindow(ChatWindow & cw);
+     ChatWindow(ChatWindow && cw);
+
+     ChatWindow & operator =(ChatWindow &cw);
+     ChatWindow & operator =(ChatWindow&&cw);
+
     ~ChatWindow();
 
     void AddMessage(std::shared_ptr<MessageWidget> MW, bool newMessage);
@@ -28,7 +34,7 @@ private:
     bool vis = true;
     std::shared_ptr<MessageWidget> MW;
     std::shared_ptr<MessageWidget>  EMW;
-    QList<std::shared_ptr<MessageWidget>>MessageWdigetLsit;
+    QList<std::shared_ptr<MessageWidget>>MessageWidgetList;
 
     Ui::ChatWindow *ui;
 private slots:

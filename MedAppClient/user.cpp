@@ -7,6 +7,7 @@ User::User(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->label->hide();
+    data =  nullptr;
 }
 
 
@@ -28,12 +29,50 @@ User::User(Data *data):User()
 
 }
 
+User ::User (User & user)
+{
+    this->operator =(user.data);
+}
+
+User::User (User && user)
+{
+   this->operator =(user);
+}
+User& User::operator = (User & user)
+{
+    CW = std::make_shared<ChatWindow>(*user.CW.get());
+
+    if(user.data == nullptr)
+    {
+        if(data !=nullptr)
+        {
+           delete data;
+        }
+        data = nullptr;
+        return *this;
+    }
+    if(data==nullptr)
+    {
+        data = new Data();
+    }
+    data->operator =(*user.data);
+
+    return *this;
+}
+User& User::operator = (User && user)
+{
+    CW = std::move(user.CW);
+    if(data!=nullptr) delete data;
+    data = std::move(user.data);
+    return *this;
+}
+
 
 
 User::~User()
 {
     if(Message!=nullptr) delete Message;
-    delete data;
+    if(data != nullptr)  delete data;
     delete ui;
 }
 
@@ -47,7 +86,7 @@ void User::mousePressEvent(QMouseEvent *event)
 void User::RecvMessage(std::shared_ptr<MessageInfo> info)
 {
 
-    if(info.get()->NewMessage())
+    if(info->NewMessage())
     {
         ++NewMessageCount;
         ui->label->setText(QString::number(NewMessageCount));
@@ -57,7 +96,6 @@ void User::RecvMessage(std::shared_ptr<MessageInfo> info)
     {
         ui->label->show();
     }
-    qDebug()<<"RecvMessege";
     CW->AddMessage(std::make_shared<MessageWidget>(info.get()),!NewMessageCountisNull());
 
 }

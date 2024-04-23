@@ -8,18 +8,29 @@ MessageInfo::MessageInfo(int id)
     defineColor(true);
     CheckMessage = true;
 }
-void MessageInfo::defineColor(bool color)
-{
-    if(color) Color  = "background-color: rgb(85, 255, 127);" ;
-    else  Color = "background-color: rgb(255, 255, 255);";
-}
+
 MessageInfo::MessageInfo(QByteArray *byte)
 {
        RecvMessage(byte);
 }
 
+MessageInfo::MessageInfo(const MessageInfo &  messa)
+{
+
+}
+MessageInfo::MessageInfo(MessageInfo && MW)
+{
+
+}
+
+
 MessageInfo::~MessageInfo()
 {
+}
+void MessageInfo::defineColor(bool color)
+{
+    if(color) Color  = "background-color: rgb(85, 255, 127);" ;
+    else  Color = "background-color: rgb(255, 255, 255);";
 }
 void MessageInfo::InsetText(const QString &Text)
 {

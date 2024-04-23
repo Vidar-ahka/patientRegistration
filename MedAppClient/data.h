@@ -10,7 +10,14 @@ public:
    Data();
    Data(int &id,QString &Name);
    Data(int &id,QString &Name,QImage &Image);
-  ~Data();
+
+   Data(Data& data);
+   Data & operator=(Data & data);
+   Data(Data&& data);
+   Data & operator=(Data && data);
+
+
+   ~Data();
 
   int GetId();
   QString GetName();

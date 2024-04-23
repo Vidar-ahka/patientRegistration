@@ -2,11 +2,45 @@
 
 Users::Users()
 {
+
+}
+
+Users::Users(Users &users)
+{
+  this->operator =(users);
+}
+Users::Users(Users&&users)
+{
+    this->operator =(users);
+}
+Users & Users::operator =(const Users &users)
+{
+    this->users_list.clear();
+    this->users_hash.clear();
+    for(auto &it:users.users_list)
+    {
+        std::shared_ptr<User> user  = std::make_shared<User>(*it.get());
+
+        this->users_list.push_back(user);
+        this->users_hash[user->data->GetId()] = user;
+    }
+}
+Users & Users::operator =(Users&&users)
+{
+    this->users_hash.clear();
+    this->users_list.clear();
+    for(auto it:users.users_list)
+    {
+        this->users_list.push_back(it);
+        this->users_hash[it->data->GetId()] = it;
+    }
+    users.users_hash.clear();
+    users.users_list.clear();
 }
 
 void Users::InserUser(std::shared_ptr<User> user)
 {
-    users_hash[user.get()->data->GetId()] = user;
+    users_hash[user->data->GetId()] = user;
     users_list.push_back(user);
 }
 

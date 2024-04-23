@@ -16,6 +16,9 @@ public:
     MessageInfo();
     MessageInfo(int id);
     MessageInfo(QByteArray *byte);
+    MessageInfo(const MessageInfo &  MW);
+    MessageInfo(MessageInfo && MW);
+
     ~MessageInfo();
     void InsetText  (const QString   &Text);
     void InsertFile (const QString & Url);

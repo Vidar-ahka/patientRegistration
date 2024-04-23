@@ -12,6 +12,12 @@ public:
 
 
     ByteArray   (QTcpSocket * Byte);
+    ByteArray   (ByteArray & byte);
+    ByteArray   (ByteArray && byte);
+
+    ByteArray & operator =(ByteArray &  byte);
+    ByteArray & operator =(ByteArray && byte);
+
     bool AddByte(QTcpSocket * Byte);
     int   GetPacket();
     quint64 GetSize();
