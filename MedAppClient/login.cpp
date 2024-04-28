@@ -26,8 +26,10 @@ void Login::SlotClikcSingIn()
 {
 
   if( ui->Login_lineEdit->text().isEmpty() || ui->Password_lineEdit->text().isEmpty())return;
-
-  emit SignalSingIn(ui->Login_lineEdit->text(),ui->Password_lineEdit->text());
+  std::shared_ptr<Message> mes = std::make_shared<Message>(P_SingIn);
+  mes->Insert(ui->Login_lineEdit->text());
+  mes->Insert(ui->Password_lineEdit->text());
+  emit SignalSend(mes);
 }
 
 
@@ -49,7 +51,11 @@ void Login::SlotClickSingUpNext()
  if(ui->newPassword_lineEdit->text().isEmpty()||ui->NewPasswordlineEdit_2->text().isEmpty())return ;
  if(ui->newPassword_lineEdit->text()!=ui->NewPasswordlineEdit_2->text())return;
 
- emit SignalSinUp(ui->Name_lineEdit->text(),ui->newLogin_lineEdit->text(),ui->newPassword_lineEdit->text());
+ std::shared_ptr<Message> mes = std::make_shared<Message>(P_SingUp);
+ mes->Insert(ui->Name_lineEdit->text());
+ mes->Insert(ui->newLogin_lineEdit->text());
+ mes->Insert(ui->newPassword_lineEdit->text());
+ emit SignalSend(mes);
 
 
  ui->stackedWidget->setCurrentIndex(0);

@@ -25,9 +25,15 @@ void Profil::on_pushButton_clicked()
 {
 
     if(ui->Name_lineEdit->text()!=Name||ui->Login_lineEdit->text()!=Login){
-        Name = ui->Name_lineEdit->text();
+
+        std::shared_ptr<Message> ms = std::make_shared<Message>(P_SetData);
+        Name  = ui->Name_lineEdit->text();
         Login = ui->Login_lineEdit->text();
-        emit SignalSetData(Name ,Login );
+        ms->Insert(Name);
+        ms->Insert(Login);
+        emit  SignalSend(ms);
+
+
     }
 }
 

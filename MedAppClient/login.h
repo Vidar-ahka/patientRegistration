@@ -2,7 +2,8 @@
 #define LOGIN_H
 
 #include <QWidget>
-
+#include"memory"
+#include"message.h"
 namespace Ui {
 class Login;
 }
@@ -21,9 +22,7 @@ private slots:
     void Back();
 
 signals:
-    void SignalSingIn(QString  Login , QString Password);
-    void SignalSinUp(QString Name ,QString  Login , QString Password);
-
+    void SignalSend(std::shared_ptr<Message> mes);
 
 private:
     Ui::Login *ui;

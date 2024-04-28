@@ -49,7 +49,9 @@ void MainWindow::SlotClick()
 
    if(!user->NewMessageCountisNull())
    {
-    emit SignalSetStatusMessage(user->data->GetId());
+    std::shared_ptr<Message> ms = std::make_shared<Message>(P_SetStatusMessage);
+    ms->Insert(user->data->GetId());
+    emit SignalSend(ms);
     user->NullNewMessageCount();
    }
     ui->ChatWidget_layout->addWidget(user->CW.get());
@@ -66,7 +68,9 @@ void MainWindow::SlotReturnPresed()
         CurrentUser->CreateMessage();
         CurrentUser->Message->InsetText(Text);
     }
+
     CurrentUser->CW->AddMessage(std::make_shared<MessageWidget>(CurrentUser->Message),false);
+
     emit SignalSendMessage(CurrentUser->Message);
     ui->lineEdit->clear();
 }

@@ -36,7 +36,7 @@ private slots:
     void on_pushButton_clicked();
 signals:
     void SignalSendMessage(MessageInfo * info);
-    void SignalSetStatusMessage(int id);
+    void  SignalSend(std::shared_ptr<Message> ms);
 private:
     User * CurrentUser = nullptr;
     Ui::MainWindow *ui;

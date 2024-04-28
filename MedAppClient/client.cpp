@@ -9,9 +9,7 @@ socket->connectToHost("127.0.0.1",6666);
 login =  new Login();
 login->show();
 connect(socket,&QTcpSocket::readyRead,this,&Client::SlotReadyRead);
-connect(login,&Login::SignalSingIn,this,&Client::SlotSendSingIn);
-connect(login, &Login::SignalSinUp , this, &Client::SlotSendSingUp);
-
+connect(login,&Login::SignalSend,this,     &Client::send);
 
 }
 Client::~Client()
@@ -77,13 +75,13 @@ void Client::RecvSingIn(QDataStream &in)
 
 
     connect(pat.get(),   &Patients::SignalSavePat,           this,&Client::SavePat);
-    connect(MW.get(),    &MainWindow::SignalSetStatusMessage,this,&Client::SlotSetStatusMessage);
-    connect(avatar.get(),&Avatar::SignalSetAvatar,           this,&Client::SlotSetAvatar);
+    connect(MW.get(),    &MainWindow::SignalSendMessage,     this,&Client::SlotSendMessage);
+
+
+    connect(MW.get(),    &MainWindow::SignalSend,this,&Client::send);
+    connect(profil.get(),&Profil::SignalSend,                this, Client::send);
     connect(avatar.get(),&Avatar::SignalSend,                this,&Client::send);
 
-    connect(avatar.get(),&Avatar::SinglDeleteAvatar,         this,&Client::SlosDeleteAvatar);
-    connect(profil.get(),&Profil::SignalSetData,             this, Client::SlotSetTextData);
-    connect(MW.get(),    &MainWindow::SignalSendMessage,     this,&Client::SlotSendMessage);
     requestPatData();
     requestAllMessage();
     MW->show();
@@ -196,7 +194,6 @@ void Client::SlotSendSingUp(QString Name, QString Login, QString Password)
 
 void Client::SlotSendMessage(MessageInfo *MI)
 {
-
      QByteArray  option;
      MI->SendMessage(option);
      socket->write(option);

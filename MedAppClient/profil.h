@@ -2,6 +2,7 @@
 #define PROFIL_H
 
 #include <QMainWindow>
+#include"message.h"
 
 
 namespace Ui {
@@ -17,7 +18,8 @@ public:
     explicit Profil(QString  Name , QString Login);
     ~Profil();
 signals:
-    void SignalSetData(QString Name , QString Login);
+    void SignalSend(std::shared_ptr<Message> ms);
+
 
 private slots:
     void on_pushButton_clicked();
