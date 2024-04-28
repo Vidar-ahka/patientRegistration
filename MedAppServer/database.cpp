@@ -127,24 +127,26 @@ bool DataBase::SingIn(int id, QByteArray &ba)
 
     QDataStream out(&ba,QIODevice::WriteOnly);
     QSqlQuery SQ(DB);
-    out<<quint64(0)<<1<<id<<0;
+
     SQ.prepare("SELECT   Name_user  , Login_user, Ava FROM Users  WHERE Id_user = :id ;");
     SQ.bindValue(":id",id);
     if(!SQ.exec())return false;
+
+    out<<quint64(0)<<1<<id<<0;
 
     while(SQ.next())
     {
         out<<SQ.value(0).toString()<<SQ.value(1).toString()<<SQ.value(2).toBool();
         if(SQ.value(2).toBool())
         {
-           out<<SQ.value(2).toByteArray();
+            ba.append(SQ.value(2).toByteArray());
+            out.device()->seek(ba.size());
         }
     }
 
 
-    SQ.prepare("SELECT Id_user , Name_user , Ava FROM Users ;");
-    SQ.bindValue(":id",id);
 
+    SQ.prepare("SELECT Id_user , Name_user , Ava FROM Users ;");
     if(!SQ.exec())return false;
 
     int size = 0;
@@ -155,7 +157,9 @@ bool DataBase::SingIn(int id, QByteArray &ba)
         if(SQ.value(2).toBool())
         {
 
-            out<<SQ.value(2).toByteArray();
+            ba.append(SQ.value(2).toByteArray());
+            out.device()->seek(ba.size());
+            //out<<SQ.value(2).toByteArray();
         }
         size++;
     }
@@ -275,7 +279,7 @@ bool DataBase::GetPatients(int id, QByteArray &by)
     SQ.prepare("SELECT Byte FROM Pat WHERE Id_user = :id ;");
     SQ.bindValue(":id",id);
 
-    if(SQ.exec())return false;
+    if(!SQ.exec())return false;
 
     QDataStream out(&by,QIODevice::WriteOnly);
     out<<quint64(0)<<5;
@@ -299,7 +303,7 @@ bool DataBase::SetAvatarUser(User *user)
     QSqlQuery SQ(DB);
     SQ.prepare("UPDATE Users SET Ava = :ava  WHERE Id_user = :id;");
     SQ.bindValue(":id" , user->Getid());
-    SQ.bindValue(":ava",user->GetByteArray());
+    SQ.bindValue(":ava", user->GetByteArray());
     return SQ.exec();
 }
 

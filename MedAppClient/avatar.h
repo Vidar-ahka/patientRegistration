@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include<QFileDialog>
+#include"message.h"
 
 namespace Ui {
 class Avatar;
@@ -28,6 +29,7 @@ private:
     Ui::Avatar *ui;
 signals:
     void SignalSetAvatar(QString & url);
+    void SignalSend(std::shared_ptr<Message> mes);
     void SinglDeleteAvatar();
 };
 

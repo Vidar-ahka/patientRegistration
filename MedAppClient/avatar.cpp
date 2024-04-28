@@ -27,14 +27,22 @@ void Avatar::SlotSetAvatar()
     QString url =  QFileDialog::getOpenFileName(this,"Select","C:\\");
     if(!url.isEmpty())
     {
-        ui->Avatar_label->setPixmap(url);
-        emit SignalSetAvatar(url);
+         QImage img(url);
+         ui->Avatar_label->setPixmap(QPixmap::fromImage(img));
+
+
+         std::shared_ptr<Message> mes = std::make_shared<Message>(P_SetAvatar);
+         QVariant var;
+         var.setValue(img);
+         mes->Insert(var);
+         emit   SignalSend(mes);
     }
 }
 
 void Avatar::SlotDeleteAvatar()
 {
     ui->Avatar_label->setPixmap(QPixmap(":\\Image\\Images\\Avatar.png"));
-    emit SinglDeleteAvatar();
+    std::shared_ptr<Message> mes = std::make_shared<Message>(P_DelteAvatar);
+    emit SignalSend(mes);
 }
 

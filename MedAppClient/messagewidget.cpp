@@ -103,6 +103,7 @@ MessageWidget & MessageWidget::operator =(MessageWidget && mw)
     if(!mw.ui->label->text().isEmpty())
     {
        ui->label->setText( mw.ui->label->text());
+       mw.ui->label->clear();
     }
     if(mw.file_lay!=NULL)
     {

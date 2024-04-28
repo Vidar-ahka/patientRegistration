@@ -22,8 +22,6 @@ MessageInfo::MessageInfo(MessageInfo && MW)
 {
 
 }
-
-
 MessageInfo::~MessageInfo()
 {
 }
@@ -37,59 +35,6 @@ void MessageInfo::InsetText(const QString &Text)
     if(Text.isEmpty())return;
     this->Text = Text;
 }
-void MessageInfo::InsertImage(const QString &ImageUrl)
-{
-    QImage Img(ImageUrl);
-
-    ImageList.push_back(Img);
-}
-void MessageInfo::RecvImage(QDataStream &in, int &SizeImage)
-{
-    QImage img;
-    while(SizeImage)
-    {
-        in>>img;
-        ImageList.push_back(img);
-        --SizeImage;
-
-    }
-
-}
-void MessageInfo::RecvFile(QDataStream &in, int &SizeFile)
-{
-    QByteArray ba;
-    QString name;
-
-    while(SizeFile)
-    {
-        in>>name>>ba;
-
-
-        try
-        {
-            QDir().mkdir(downloadPath);
-            name = downloadPath+name;
-            QFile file(name);
-            if(!file.open(QIODevice::WriteOnly))
-            {
-
-               throw name;
-            }
-
-            file.write(ba);
-            file.close();
-            FileUrlList.push_back(name);
-        }
-        catch(QString  name)
-        {
-            qDebug()<<"file - "<< name <<"dont open";
-        }
-        --SizeFile;
-    }
-
-
-}
-
 void MessageInfo::InsertFile(const QString &Url)
 {
     QFileInfo FI(Url);
@@ -105,42 +50,24 @@ void MessageInfo::InsertFile(const QString &Url)
 
 }
 
-void MessageInfo::RecvMessage(  QByteArray * const ba)
+void MessageInfo::InsertImage(const QString &ImageUrl)
 {
-    QDataStream in(ba,QIODevice::ReadOnly);
+    QImage Img(ImageUrl);
+    ImageList.push_back(Img);
+}
+void MessageInfo::RecvImage(QDataStream &in, int &SizeImage)
+{
+    QImage img;
+    while(SizeImage)
+    {
+        in>>img;
+        ImageList.push_back(img);
+        --SizeImage;
 
-    int  IdSender2;
-    bool TextNotNull ;
-    int  SizeImage;
-    int  SizeFile;
-
-    in>>CheckMessage>>id>>IdSender2>>TextNotNull>>SizeImage>>SizeFile;
-
-    if(IdSender2 != IdSender)
-    {
-        defineColor(false);
-        this->id = IdSender2;
     }
-    else
-    {
-        defineColor(true);
-        CheckMessage = true;
-    }
-    if(TextNotNull)
-    {
-        in>>Text;
-    }
-    if(SizeImage)
-    {
-        RecvImage(in,SizeImage);
-    }
-    if(SizeFile)
-    {
-
-        RecvFile(in,SizeFile);
-   }
 
 }
+
 
 void MessageInfo::SendMessage(QByteArray &ba)
 {
@@ -181,6 +108,81 @@ void MessageInfo::SendMessage(QByteArray &ba)
      out.device()->seek(0);
      out<<ba.size();
 }
+
+
+
+
+
+void MessageInfo::RecvMessage(  QByteArray * const ba)
+{
+    QDataStream in(ba,QIODevice::ReadOnly);
+    int  IdSender2;
+    bool TextNotNull ;
+    int  SizeImage;
+    int  SizeFile;
+    in>>CheckMessage>>id>>IdSender2>>TextNotNull>>SizeImage>>SizeFile;
+    if(IdSender2 != IdSender)
+    {
+        defineColor(false);
+        this->id = IdSender2;
+    }
+    else
+    {
+        defineColor(true);
+        CheckMessage = true;
+    }
+    if(TextNotNull)
+    {
+        in>>Text;
+    }
+    if(SizeImage)
+    {
+        RecvImage(in,SizeImage);
+    }
+    if(SizeFile)
+    {
+
+        RecvFile(in,SizeFile);
+   }
+
+}
+
+void MessageInfo::RecvFile(QDataStream &in, int &SizeFile)
+{
+    QByteArray ba;
+    QString name;
+
+    while(SizeFile)
+    {
+        in>>name>>ba;
+        try
+        {
+            QDir().mkdir(downloadPath);
+            name = downloadPath+name;
+            QFile file(name);
+            if(!file.open(QIODevice::WriteOnly))
+            {
+
+               throw name;
+            }
+
+            file.write(ba);
+            file.close();
+            FileUrlList.push_back(name);
+        }
+        catch(QString  name)
+        {
+            qDebug()<<"file - "<< name <<"dont open";
+        }
+        --SizeFile;
+    }
+
+
+}
+
+
+
+
 int MessageInfo::GetId()
 {
     return id;

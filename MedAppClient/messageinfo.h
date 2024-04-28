@@ -42,15 +42,18 @@ public:
 private:
     void defineColor(bool color);
     void InsertImage(const QString &ImageUrl);
-    void RecvImage(QDataStream &in,int &SizeImage);
-    void RecvFile(QDataStream &in,int &SizeFile);
- static int IdSender;
- static QString downloadPath ;
+    void RecvImage  (QDataStream &in,int &SizeImage);
+    void RecvFile   (QDataStream &in,int &SizeFile);
+
+
+    static int IdSender;
+    static QString downloadPath ;
+
     int  id;
     QString Color;
     QString Text;
     QList<QImage>   ImageList;
-    QList<QString> FileUrlList;
+    QList<QString>  FileUrlList;
     bool CheckMessage;
 };
 class  DataFile

@@ -33,6 +33,7 @@ SOURCES += \
     login.cpp \
     main.cpp \
     mainwindow.cpp \
+    message.cpp \
     messageinfo.cpp \
     messagewidget.cpp \
     patients.cpp \
@@ -52,6 +53,7 @@ HEADERS += \
     imageclick.h \
     login.h \
     mainwindow.h \
+    message.h \
     messageinfo.h \
     messagewidget.h \
     patients.h \

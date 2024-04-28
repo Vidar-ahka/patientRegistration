@@ -45,6 +45,8 @@ void Server::SlotReadyRead()
 
 
     if(!user->RecvByte())return;
+
+         qDebug()<<user->GetByteArray().GetPacket();
          switch (user->GetByteArray().GetPacket()) {
          case P_SingIn:
          {

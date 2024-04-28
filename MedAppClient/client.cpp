@@ -25,13 +25,8 @@ void Client::RecvSingIn(QDataStream &in)
 
 
     in>>this->id;
-
     deleteLogin();
-
-
     MessageInfo::SetSenderId(this->id);
-
-
     qDebug()<<"RecvSing In  ";
     int id;
     QString Name;
@@ -43,19 +38,19 @@ void Client::RecvSingIn(QDataStream &in)
     in>>size>>Name>>
         Login>>imgnotNull;
 
-    users =  std::make_shared<Users>();  //new Users();
-    List =   std::make_shared<UserList>(users);
-    avatar =  std::make_shared<Avatar>();    //new Avatar;
-    profil  = std::make_shared<Profil>(Name,Login);    //new Profil(Name,Login);
+    users   = std::make_shared<Users>();
+    List    = std::make_shared<UserList>(users);
+    avatar  = std::make_shared<Avatar>();
+    profil  = std::make_shared<Profil>(Name,Login);
     pat     = std::make_shared<Patients>();
-
-    MW =      std::make_shared<MainWindow>(List,avatar,profil,pat); //new MainWindow(List,avatar,profil);
+    MW      = std::make_shared<MainWindow>(List,avatar,profil,pat);
 
     if(imgnotNull)
     {
-        in>>img;
+        //in>>img;
         QImage as;
-        as.loadFromData(img,"PNG");
+        in>>as;
+        //as.loadFromData(img,"PNG");
         avatar->SetAvatar(as);
     }
 
@@ -65,9 +60,8 @@ void Client::RecvSingIn(QDataStream &in)
     in>>id>>Name>>imgnotNull;
     if(imgnotNull)
     {
-        in>>img;
         QImage as;
-        as.loadFromData(img,"PNG");
+        in>>as;
         user =  std::make_shared<User>(new Data(id,Name,as));
     }
     else
@@ -75,25 +69,24 @@ void Client::RecvSingIn(QDataStream &in)
          user  = std::make_shared<User>(new Data(id,Name));
 
     }
-     qDebug()<<" Size  "<<size;
-    List.get() ->InsertUser(user);
-    users.get()->InserUser(user);
-    qDebug()<<"  Size 2   "<<size;
+    List ->InsertUser(user);
+    users->InserUser(user);
     connect(user.get(),&User::Click,MW.get(),&MainWindow::SlotClick);
-
     --size;
     }
 
 
-     connect(pat.get(),   &Patients::SignalSavePat,           this,&Client::SavePat);
+    connect(pat.get(),   &Patients::SignalSavePat,           this,&Client::SavePat);
     connect(MW.get(),    &MainWindow::SignalSetStatusMessage,this,&Client::SlotSetStatusMessage);
     connect(avatar.get(),&Avatar::SignalSetAvatar,           this,&Client::SlotSetAvatar);
+    connect(avatar.get(),&Avatar::SignalSend,                this,&Client::send);
+
     connect(avatar.get(),&Avatar::SinglDeleteAvatar,         this,&Client::SlosDeleteAvatar);
     connect(profil.get(),&Profil::SignalSetData,             this, Client::SlotSetTextData);
     connect(MW.get(),    &MainWindow::SignalSendMessage,     this,&Client::SlotSendMessage);
     requestPatData();
     requestAllMessage();
-    MW.get()->show();
+    MW->show();
 
 }
 
@@ -106,7 +99,7 @@ void Client::RecvMessage(std::shared_ptr<MessageInfo> info , ByteArray * byte)
 
 void Client::GetPatients(ByteArray *byte)
 {
-    pat.get()->GetPat(byte);
+    pat->GetPat(byte);
 }
 
 
@@ -232,14 +225,13 @@ void Client::SlotSetAvatar(QString &url)
     QImage img(url);
     QBuffer bu(&imgba);
     bu.open(QIODevice::WriteOnly);
-    out<<quint64(0)<<P_SetAvatar;
 
+    out<<quint64(0)<<P_SetAvatar;
     img.save(&bu,"PNG");
+
 
     out.device()->seek(0);
     out<<ba.size()+imgba.size();
-
-
     socket->write(ba+imgba);
     bu.close();
 }
@@ -262,3 +254,7 @@ void Client::SlosDeleteAvatar()
     socket->write(ba);
 }
 
+void Client::send(std::shared_ptr<Message>  mes)
+{
+    socket->write(*mes->getbyte().get());
+}

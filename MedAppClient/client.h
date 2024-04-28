@@ -4,13 +4,9 @@
 #include<mainwindow.h>
 #include<login.h>
 #include<bytearray.h>
+#include"message.h"
 
 
-
- enum Packet{P_None = 0 , P_SingIn = 1,P_SingUp = 2 , P_Message = 3,
-             P_SavePat = 4,P_GetPat = 5,P_GetAllMessage = 6 ,
-             P_SetStatusMessage = 7,P_SetAvatar = 8, P_DelteAvatar = 9,
-             P_SetData = 10};
 
 
 class Client:public QObject
@@ -48,6 +44,7 @@ private:
 
 
 public slots:
+    void send(std::shared_ptr<Message>  mes);
     void SlotReadyRead();
     void SlotSendSingIn(QString Login , QString Password);
     void SlotSendSingUp(QString Name, QString Login , QString Password);

@@ -31,10 +31,6 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-
-
-
-
 void MainWindow::SlotClick()
 {
     User *  user = (User*)sender();
@@ -59,25 +55,19 @@ void MainWindow::SlotClick()
     ui->ChatWidget_layout->addWidget(user->CW.get());
     ui->lineEdit->setText(user->GetSaveText());
     CurrentUser = user;
-
 }
 
 void MainWindow::SlotReturnPresed()
 {
     if(CurrentUser==nullptr) return;
-
     QString Text = ui->lineEdit->text();
-
     if(!Text.isEmpty())
     {
         CurrentUser->CreateMessage();
         CurrentUser->Message->InsetText(Text);
     }
-
     CurrentUser->CW->AddMessage(std::make_shared<MessageWidget>(CurrentUser->Message),false);
     emit SignalSendMessage(CurrentUser->Message);
-    CurrentUser->DropMessage();
-
     ui->lineEdit->clear();
 }
 
