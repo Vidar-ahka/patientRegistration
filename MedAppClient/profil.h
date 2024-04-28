@@ -18,7 +18,7 @@ public:
     explicit Profil(QString  Name , QString Login);
     ~Profil();
 signals:
-    void SignalSend(std::shared_ptr<Message> ms);
+    void SignalSend(std::shared_ptr<MessageBase> ms);
 
 
 private slots:

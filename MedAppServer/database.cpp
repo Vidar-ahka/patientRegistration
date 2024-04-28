@@ -77,16 +77,14 @@ void DataBase::AddUser(User* user)
     while(QDB.next())
     {
         id = QDB.value(0).toInt();
-
     }
 }
-
 
     QDB.prepare("INSERT INTO Pat(Id_user, Byte) VALUES(:Id_user, :Byte) ;");
     QDB.bindValue(":Id_user",id);
     QDB.bindValue(":Byte","");
     QDB.exec();
-
+    return ;
 
 
 }
@@ -290,8 +288,11 @@ bool DataBase::GetPatients(int id, QByteArray &by)
 
     }
 
-    if(by.size()-12==0)return false;
+    if(by.size()-12==0)
+    {
 
+        return false;
+    }
     out.device()->seek(0);
     out<<by.size();
     return true;

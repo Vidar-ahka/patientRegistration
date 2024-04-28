@@ -10,6 +10,7 @@
 #include<QDataStream>
 #include<algorithm>
 #include <QFileDialog>
+#include"message.h"
 
 
 #include "xlsxdocument.h"
@@ -47,6 +48,8 @@ private slots:
 
 signals:
      void SignalSavePat(QByteArray &byte);
+     void SignalSend(std::shared_ptr<Message> ms );
+
 
 private:
      int removeId = 0;

@@ -8,6 +8,7 @@ User::User(QWidget *parent) :
     ui->setupUi(this);
     ui->label->hide();
     data =  nullptr;
+    Message = NULL;
 }
 
 
@@ -17,9 +18,8 @@ User::User(Data *data):User()
 
 
   this->data = data;
-
+  Message = NULL;
   CW =  std::make_shared<ChatWindow>(data->GetName());
-  Message  = new MessageInfo(data->GetId());
   ui->Name_Label->setText(data->GetName());
   if(!data->ImageisNull())
   {
@@ -71,7 +71,6 @@ User& User::operator = (User && user)
 
 User::~User()
 {
-    if(Message!=nullptr) delete Message;
     if(data != nullptr)  delete data;
     delete ui;
 }
@@ -96,11 +95,9 @@ void User::RecvMessage(std::shared_ptr<MessageInfo> info)
     {
         ui->label->show();
     }
-    CW->AddMessage(std::make_shared<MessageWidget>(info.get()),!NewMessageCountisNull());
+    CW->AddMessage(std::make_shared<MessageWidget>(info),!NewMessageCountisNull());
 
 }
-
-
 
 void User::NullNewMessageCount()
 {
@@ -111,14 +108,16 @@ void User::NullNewMessageCount()
 
 void User::CreateMessage()
 {
-    if(Message!=nullptr ) return;
-    Message = new MessageInfo(this->data->GetId());
+    if(Message==NULL )
+    {
+
+        Message = std::make_shared<MessageInfo>(this->data->GetId());
+    }
 }
 
 void User::DropMessage()
 {
-    delete Message;
-    Message = nullptr;
+    Message = NULL;
 }
 
 void User::SetSaveText(QString text)

@@ -44,7 +44,7 @@ private:
 
 
 public slots:
-    void send(std::shared_ptr<Message>  mes);
+    void send(std::shared_ptr<MessageBase>  mes);
     void SlotReadyRead();
     void SlotSendSingIn(QString Login , QString Password);
     void SlotSendSingUp(QString Name, QString Login , QString Password);

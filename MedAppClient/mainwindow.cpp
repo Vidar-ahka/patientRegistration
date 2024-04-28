@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QLabel>
 
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -64,14 +65,15 @@ void MainWindow::SlotReturnPresed()
     if(CurrentUser==nullptr) return;
     QString Text = ui->lineEdit->text();
     if(!Text.isEmpty())
-    {
-        CurrentUser->CreateMessage();
-        CurrentUser->Message->InsetText(Text);
+    {    
+         CurrentUser->CreateMessage();
+         CurrentUser->Message->InsetText(Text);
     }
-
     CurrentUser->CW->AddMessage(std::make_shared<MessageWidget>(CurrentUser->Message),false);
 
-    emit SignalSendMessage(CurrentUser->Message);
+    emit SignalSend(CurrentUser->Message);
+      CurrentUser->DropMessage();
+
     ui->lineEdit->clear();
 }
 
@@ -80,8 +82,10 @@ void MainWindow::SlotReturnPresed()
 
 void MainWindow::SlotFileButton()
 {
+    if(CurrentUser == nullptr) return;
     QString Url =  QFileDialog::getOpenFileName(this,"Select","C:\\");
     if(Url.isEmpty()) return;
+    CurrentUser->CreateMessage();
     CurrentUser->Message->InsertFile(Url);
 }
 

@@ -13,7 +13,7 @@ MessageWidget::MessageWidget(QWidget *parent) :
     image_lay = NULL;
 }
 
-MessageWidget::MessageWidget(MessageInfo *info):MessageWidget()
+MessageWidget::MessageWidget(std::shared_ptr<MessageInfo> info):MessageWidget()
 {
     if(info->getTextNotNull())
     {

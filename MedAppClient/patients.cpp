@@ -29,6 +29,8 @@ void Patients::GetPat(QByteArray *byte)
     in>>size>>size;
     int id;
 
+    qDebug()<<"get packet "<<size;
+
 
     for(int i = 0 ; i<size;i++)
     {
@@ -105,12 +107,14 @@ void Patients::SlotDeleteClick()
 
 void Patients::SlotSaveClick()
 {
+    std::shared_ptr<Message> mes = std::make_shared<Message>(P_SavePat);
     int row =    ui->tableWidget->rowCount();
     int column = ui->tableWidget->columnCount();
     QString text;
     QByteArray ba;
     QDataStream out(&ba,QIODevice::WriteOnly);
-    out<<quint64(0)<<4<<row;
+    mes->Insert(row);
+
     for(int i = 0;i<row;i++)
     {
        for(int j = 0 ; j<column;j++)
@@ -118,18 +122,16 @@ void Patients::SlotSaveClick()
            if(j==4)
             {
                  text = QDateEdit(ui->tableWidget->cellWidget(i,j)).text();
-                 out<<text;
+
+                 mes->Insert(text);
                  continue;
             }
             text = ui->tableWidget->item(i,j)->text();
-            out<<text;
+
+            mes->Insert(text);
        }
     }
-
-    out.device()->seek(0);
-    out<<ba.size();
-    emit SignalSavePat(ba);
-
+    emit SignalSend(mes);
 }
 
 void Patients::SlotSaveExel()

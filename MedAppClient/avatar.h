@@ -29,7 +29,7 @@ private:
     Ui::Avatar *ui;
 signals:
 
-    void SignalSend(std::shared_ptr<Message> mes);
+    void SignalSend(std::shared_ptr<MessageBase> mes);
 
 };
 

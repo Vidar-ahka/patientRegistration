@@ -22,7 +22,7 @@ private slots:
     void Back();
 
 signals:
-    void SignalSend(std::shared_ptr<Message> mes);
+    void SignalSend(std::shared_ptr<MessageBase> mes);
 
 private:
     Ui::Login *ui;

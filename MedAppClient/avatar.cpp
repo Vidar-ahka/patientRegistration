@@ -36,7 +36,8 @@ void Avatar::SlotSetAvatar()
          var.setValue(img);
          mes->Insert(var);
          emit   SignalSend(mes);
-    }
+
+  }
 }
 
 void Avatar::SlotDeleteAvatar()

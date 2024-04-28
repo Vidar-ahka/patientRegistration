@@ -38,7 +38,7 @@ public:
     void SetSaveText(QString text);
     QString GetSaveText();
     bool NewMessageCountisNull();
-    MessageInfo * Message;
+    std::shared_ptr<MessageInfo> Message;
 
 
 

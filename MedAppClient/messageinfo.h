@@ -7,10 +7,10 @@
 #include<QBuffer>
 #include"QDir"
 #include"QStandardPaths"
-
+#include"message.h"
 class  DataFile;
 
-class MessageInfo
+class MessageInfo : public MessageBase
 {
 public:
     MessageInfo();
@@ -20,10 +20,20 @@ public:
     MessageInfo(MessageInfo && MW);
 
     ~MessageInfo();
+
+    void setbytearray(std::shared_ptr<QByteArray> byte_);
+    std::shared_ptr<QByteArray> getbyte();
+    void build() ;
+
+
+
+
     void InsetText  (const QString   &Text);
     void InsertFile (const QString & Url);
     void RecvMessage(QByteArray * const   ba);
     void SendMessage(QByteArray & ba);
+
+
     int  GetId();
     QString GetText();
     QString GetColor();
@@ -52,6 +62,7 @@ private:
     int  id;
     QString Color;
     QString Text;
+
     QList<QImage>   ImageList;
     QList<QString>  FileUrlList;
     bool CheckMessage;

@@ -8,6 +8,7 @@
 #include<patients.h>
 #include<avatar.h>
 #include<profil.h>
+#include"message.h"
 
 
 
@@ -35,8 +36,7 @@ private slots:
     void SlotFileButton();
     void on_pushButton_clicked();
 signals:
-    void SignalSendMessage(MessageInfo * info);
-    void  SignalSend(std::shared_ptr<Message> ms);
+    void  SignalSend(std::shared_ptr<MessageBase> ms);
 private:
     User * CurrentUser = nullptr;
     Ui::MainWindow *ui;

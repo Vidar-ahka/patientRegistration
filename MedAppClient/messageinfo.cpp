@@ -30,10 +30,68 @@ void MessageInfo::defineColor(bool color)
     if(color) Color  = "background-color: rgb(85, 255, 127);" ;
     else  Color = "background-color: rgb(255, 255, 255);";
 }
+
+
+void MessageInfo::setbytearray(std::shared_ptr<QByteArray> byte_)
+{
+
+    this->byte_ = byte_;
+}
+void MessageInfo::build()
+{
+
+    byte_ = std::make_shared<QByteArray>();
+    if(!getTextNotNull()&&ImageList.size()==0&&FileUrlList.size()==0) return;
+    int SizeImage = ImageList.size();
+    int SizeFile  = FileUrlList.size();
+    QDataStream out(byte_.get(),QIODevice::WriteOnly);
+    out<<quint64(0)<<3<<false<<this->id<<IdSender<<getTextNotNull()<<SizeImage<<SizeFile;
+
+    if(getTextNotNull())
+    {
+        out<<Text;
+    }
+    if(SizeImage > 0)
+    {
+       for(auto &i:ImageList)
+       {
+           out<<i;
+       }
+     }
+     if(SizeFile  > 0)   {
+         for(auto &i:FileUrlList)
+         {
+
+             QFile File(i);
+
+             if(!File.open(QIODevice::ReadOnly)) continue;
+
+             int index = i.lastIndexOf('/',i.size());
+             out<<(i.mid(index+1))<<File.readAll();
+             File.close();
+
+         }
+     }
+     out.device()->seek(0);
+     out<<byte_->size();
+
+}
+
+std::shared_ptr<QByteArray> MessageInfo::getbyte()
+{
+    return byte_;
+}
+
+
+
+
 void MessageInfo::InsetText(const QString &Text)
 {
+
     if(Text.isEmpty())return;
+
     this->Text = Text;
+
 }
 void MessageInfo::InsertFile(const QString &Url)
 {
@@ -108,10 +166,6 @@ void MessageInfo::SendMessage(QByteArray &ba)
      out.device()->seek(0);
      out<<ba.size();
 }
-
-
-
-
 
 void MessageInfo::RecvMessage(  QByteArray * const ba)
 {

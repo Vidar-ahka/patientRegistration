@@ -45,10 +45,8 @@ void Client::RecvSingIn(QDataStream &in)
 
     if(imgnotNull)
     {
-        //in>>img;
         QImage as;
-        in>>as;
-        //as.loadFromData(img,"PNG");
+        in>>as;  
         avatar->SetAvatar(as);
     }
 
@@ -74,13 +72,12 @@ void Client::RecvSingIn(QDataStream &in)
     }
 
 
-    connect(pat.get(),   &Patients::SignalSavePat,           this,&Client::SavePat);
-    connect(MW.get(),    &MainWindow::SignalSendMessage,     this,&Client::SlotSendMessage);
-
-
-    connect(MW.get(),    &MainWindow::SignalSend,this,&Client::send);
-    connect(profil.get(),&Profil::SignalSend,                this, Client::send);
-    connect(avatar.get(),&Avatar::SignalSend,                this,&Client::send);
+    connect(pat.get()   , &Patients::SignalSavePat,           this,&Client::SavePat);
+    connect(pat.get()   , &Patients::SignalSend,              this,&Client::send);
+    connect(MW.get()    , &MainWindow::SignalSendMessage,     this,&Client::SlotSendMessage);
+    connect(MW.get()    , &MainWindow::SignalSend,            this,&Client::send);
+    connect(profil.get(), &Profil::SignalSend,                this, Client::send);
+    connect(avatar.get(), &Avatar::SignalSend,                this,&Client::send);
 
     requestPatData();
     requestAllMessage();
@@ -251,7 +248,9 @@ void Client::SlosDeleteAvatar()
     socket->write(ba);
 }
 
-void Client::send(std::shared_ptr<Message>  mes)
+void Client::send(std::shared_ptr<MessageBase>  mes)
 {
+    mes->build();
+
     socket->write(*mes->getbyte().get());
 }

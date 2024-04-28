@@ -15,7 +15,7 @@ class MessageWidget : public QWidget
 
 public:
    explicit MessageWidget(QWidget *parent = nullptr);
-   MessageWidget(MessageInfo *info);
+   MessageWidget(std::shared_ptr<MessageInfo> MI);
    MessageWidget( MessageWidget & mw);
    MessageWidget( MessageWidget && mw);
 
