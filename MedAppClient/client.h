@@ -46,14 +46,7 @@ private:
 public slots:
     void send(std::shared_ptr<MessageBase>  mes);
     void SlotReadyRead();
-    void SlotSendSingIn(QString Login , QString Password);
-    void SlotSendSingUp(QString Name, QString Login , QString Password);
-    void SlotSendMessage(MessageInfo *MI);
-    void SavePat(QByteArray &byte);
-    void SlotSetStatusMessage(int id);
-    void SlotSetAvatar(QString & url);
-    void SlotSetTextData(QString Name , QString Login);
-    void SlosDeleteAvatar();
+
 };
 
 #endif // CLIENT_H

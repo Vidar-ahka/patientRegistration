@@ -47,7 +47,7 @@ private slots:
      void on_tableWidget_clicked(const QModelIndex &index);
 
 signals:
-     void SignalSavePat(QByteArray &byte);
+
      void SignalSend(std::shared_ptr<Message> ms );
 
 

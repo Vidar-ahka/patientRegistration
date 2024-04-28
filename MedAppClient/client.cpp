@@ -72,9 +72,8 @@ void Client::RecvSingIn(QDataStream &in)
     }
 
 
-    connect(pat.get()   , &Patients::SignalSavePat,           this,&Client::SavePat);
+
     connect(pat.get()   , &Patients::SignalSend,              this,&Client::send);
-    connect(MW.get()    , &MainWindow::SignalSendMessage,     this,&Client::SlotSendMessage);
     connect(MW.get()    , &MainWindow::SignalSend,            this,&Client::send);
     connect(profil.get(), &Profil::SignalSend,                this, Client::send);
     connect(avatar.get(), &Avatar::SignalSend,                this,&Client::send);
@@ -161,92 +160,6 @@ void Client::SlotReadyRead()
     }
 }
 
-
-void Client::SlotSendSingIn(QString Login, QString Password)
-{
-    QByteArray ba;
-    QDataStream out(&ba,QIODevice::ReadWrite);
-    Packet packet = P_SingIn;
-    out<<quint64(0)<<packet<<Login<<Password;
-    out.device()->seek(0);
-
-    out<<quint64(ba.size());
-
-    socket->write(ba);
-
-
-}
-
-void Client::SlotSendSingUp(QString Name, QString Login, QString Password)
-{
-    QByteArray ba;
-    QDataStream out(&ba,QIODevice::ReadWrite);
-    Packet packet = P_SingUp;
-    out<<quint64(0)<<packet<<Name<<Login<<Password;
-    out.device()->seek(0);
-    out<<ba.size();
-    socket->write(ba);
-
-}
-
-void Client::SlotSendMessage(MessageInfo *MI)
-{
-     QByteArray  option;
-     MI->SendMessage(option);
-     socket->write(option);
-}
-
-void Client::SavePat(QByteArray &byte)
-{
-    socket->write(byte);
-}
-
-void Client::SlotSetStatusMessage(int id)
-{
-    QByteArray ba;
-    QDataStream out(&ba,QIODevice::WriteOnly);
-    out<<sizePackAndId+4<<P_SetStatusMessage<<id;
-    socket->write(ba);
-}
-
-void Client::SlotSetAvatar(QString &url)
-{
-
-
-    QByteArray ba;
-    QByteArray imgba;
-    QDataStream out(&ba,QIODevice::WriteOnly);
-    QImage img(url);
-    QBuffer bu(&imgba);
-    bu.open(QIODevice::WriteOnly);
-
-    out<<quint64(0)<<P_SetAvatar;
-    img.save(&bu,"PNG");
-
-
-    out.device()->seek(0);
-    out<<ba.size()+imgba.size();
-    socket->write(ba+imgba);
-    bu.close();
-}
-
-void Client::SlotSetTextData(QString Name , QString Login)
-{
-    QByteArray ba;
-    QDataStream out(&ba,QIODevice::WriteOnly);
-    out<<quint64(0)<<P_SetData<<Name<<Login;
-    out.device()->seek(0);
-    out<<ba.size();
-    socket->write(ba);
-}
-
-void Client::SlosDeleteAvatar()
-{
-    QByteArray ba;
-    QDataStream out(&ba,QIODevice::WriteOnly);
-    out<<sizePackAndId<<P_DelteAvatar;
-    socket->write(ba);
-}
 
 void Client::send(std::shared_ptr<MessageBase>  mes)
 {
