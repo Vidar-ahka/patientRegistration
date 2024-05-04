@@ -34,7 +34,7 @@ private:
 
     quint64 sizePackAndId = sizeof(quint64)+sizeof(int);
 
-    void RecvSingIn (QDataStream &in);
+    void RecvSingIn (ByteArray * byte_);
     void RecvMessage(std::shared_ptr<MessageInfo> info , ByteArray * byte );
     void requestPatData();
     void requestAllMessage();

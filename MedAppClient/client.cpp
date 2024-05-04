@@ -17,11 +17,9 @@ Client::~Client()
 if(login !=nullptr)delete login;
 }
 
-void Client::RecvSingIn(QDataStream &in)
-{
-
-
-
+void Client::RecvSingIn(ByteArray * byte_)
+{    
+    QDataStream in(byte,QIODevice::ReadOnly);
     in>>this->id;
     deleteLogin();
     MessageInfo::SetSenderId(this->id);
@@ -87,8 +85,7 @@ void Client::RecvSingIn(QDataStream &in)
 void Client::RecvMessage(std::shared_ptr<MessageInfo> info , ByteArray * byte)
 {
     info->RecvMessage(byte);
-    int id  = info->GetId();
-    users->GetUser(id)->RecvMessage(info);
+    users->GetUser(info->GetId())->RecvMessage(info);
 }
 
 void Client::GetPatients(ByteArray *byte)
@@ -100,20 +97,12 @@ void Client::GetPatients(ByteArray *byte)
 
 void Client::requestPatData()
 {
-    QByteArray ba;
-    QDataStream out(&ba,QIODevice::WriteOnly);
-    out<<sizePackAndId<<P_GetPat;
-    socket->write(ba);
-
+    send(std::make_shared<Message>(P_GetPat));
 }
 
 void Client::requestAllMessage()
 {
-    QByteArray  ba;
-    QDataStream out(&ba,QIODevice::WriteOnly);
-    out<<sizePackAndId<<P_GetAllMessage;
-    socket->write(ba);
-
+    send(std::make_shared<Message>(P_GetAllMessage));
 }
 
 void Client::deleteLogin()
@@ -122,8 +111,6 @@ void Client::deleteLogin()
     delete login;
     login = nullptr;
 }
-
-
 
 void Client::SlotReadyRead()
 {
@@ -139,8 +126,8 @@ void Client::SlotReadyRead()
 
     if(packet == P_SingIn)
     {
-        QDataStream in(byte,QIODevice::ReadOnly);
-        RecvSingIn(in);
+
+        RecvSingIn(byte);
     }
     else if(packet == P_Message)
     {  
@@ -151,8 +138,8 @@ void Client::SlotReadyRead()
         GetPatients(byte);
     }
 
-        delete byte;
-        byte = nullptr;
+    delete byte;
+    byte = nullptr;
 
     if(socket->size()>0)
     {
@@ -164,6 +151,5 @@ void Client::SlotReadyRead()
 void Client::send(std::shared_ptr<MessageBase>  mes)
 {
     mes->build();
-
     socket->write(*mes->getbyte().get());
 }
